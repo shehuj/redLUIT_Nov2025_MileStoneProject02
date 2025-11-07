@@ -2,16 +2,24 @@
 
 // NOTE: Use enable_cloudfront = true if you want a CloudFront distribution with HTTPS.
 // Ensure acm_certificate_arn is provided for your domain/HTTPS.
-
-variable "acm_certificate_arn" {
-  description = "ARN of ACM certificate to use for CloudFront HTTPS if enable_cloudfront = true."
-  type        = string
-  default     = ""
+/*
+# Call the external script using data source
+data "external" "acm_cert" {
+  program = ["bash", "${path.module}/scripts/certs_creation.sh"]
+  query = {
+    domain         = var.domain_name
+    alt_names      = join(",", var.alt_names)    # e.g., ["www.example.com","api.example.com"]
+    region         = var.acm_region
+    hosted_zone_id = var.hosted_zone_id
+  }
 }
 
+# Use the results in your CloudFront distribution (or other resources)
 provider "aws" {
   region = var.aws_region
 }
+*/
+
 
 module "s3" {
   source      = "./modules/s3"
@@ -61,7 +69,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 */
 
 
-
+/*
   viewer_certificate {
     acm_certificate_arn            = var.acm_certificate_arn
     ssl_support_method             = "sni-only"
@@ -79,11 +87,8 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
-output "website_url" {
-  value = var.enable_cloudfront ?
-    "https://${aws_cloudfront_distribution.cdn[0].domain_name}/" :
-    "http://${module.s3.bucket_name}.s3-website-${var.aws_region}.amazonaws.com/${var.env}/index.html"
-}
+*/
+
 
 
 /*

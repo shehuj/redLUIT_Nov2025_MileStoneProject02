@@ -1,0 +1,48 @@
+name: "Deploy Prod Resume"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+            cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init & Apply (prod)
+        run: |
+          working_dir=./terraform
+          cd $working_dir
+          terraform init
+          terraform apply -auto-approve \
+            -var="env=prod" \
+            -var="bucket_name=${{ secrets.BUCKET_NAME }}" \
+            -var="table_deployment_tracking=${{ secrets.TABLE_DEPLOYMENT_TRACKING }}" \
+            -var="table_resume_analytics=${{ secrets.TABLE_RESUME_ANALYTICS }}" \
+            -var="backend_bucket=${{ secrets.BACKEND_BUCKET }}" \
+            -var="backend_lock_table=${{ secrets.BACKEND_LOCK_TABLE }}"
+
+      - name: Copy Beta → Prod
+        run: |
+          aws s3 cp s3://${{ secrets.BUCKET_NAME }}/beta/index.html s3://${{ secrets.BUCKET_NAME }}/prod/index.html --acl public-read
+
+      - name: Write deployment tracking (prod)
+        run: |
+          aws dynamodb put-item \
+            --table-name ${{ secrets.TABLE_DEPLOYMENT_TRACKING }} \
+            --item '{ "commitSha": {"S":"${{ github.sha }}"}, "environment":{"S":"prod"}, "status":{"S":"SUCCESS"}, "s3Url":{"S":"https://${{ secrets.BUCKET_NAME }}.s3.amazonaws.com/prod/index.html"}, "modelUsed":{"S":"v1.0"}, "timestamp":{"S":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'" } }'

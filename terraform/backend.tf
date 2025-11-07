@@ -1,8 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = var.backend_bucket
-    key            = "${var.env}/terraform.tfstate"
-    region         = var.aws_region
-    dynamodb_table = var.backend_lock_table
+    bucket         = "ec2-shutdown-lambda-bucket"      # literal string, not var.backend_bucket
+    key            = "milestone-project-02/terraform.tfstate"    # literal string
+    region         = "us-east-1"                     # literal string
+    dynamodb_table = "Dyning_table"  # literal string
+    encrypt        = true                             # optional, but recommended
   }
 }

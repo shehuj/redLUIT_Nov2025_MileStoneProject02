@@ -3,12 +3,6 @@
 // NOTE: Use enable_cloudfront = true if you want a CloudFront distribution with HTTPS.
 // Ensure acm_certificate_arn is provided for your domain/HTTPS.
 
-variable "enable_cloudfront" {
-  description = "Set to true to deploy CloudFront distribution with HTTPS."
-  type        = bool
-  default     = false
-}
-
 variable "acm_certificate_arn" {
   description = "ARN of ACM certificate to use for CloudFront HTTPS if enable_cloudfront = true."
   type        = string

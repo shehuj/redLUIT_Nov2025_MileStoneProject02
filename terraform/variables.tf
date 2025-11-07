@@ -53,11 +53,6 @@ variable "table_resume_analytics" {
   type = string
 }
 
-variable "enable_cloudfront" {
-  type    = bool
-  default = false
-}
-
 variable "cloudfront_domain_name" {
   type    = string
   default = ""

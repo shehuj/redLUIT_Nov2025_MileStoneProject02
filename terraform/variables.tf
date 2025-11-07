@@ -21,6 +21,20 @@ variable "bucket_name" {
   default     = "milestone-project-02-website-bucket"
 }
 
+variable "backend_bucket" {
+  description = "The name of the S3 bucket for backend storage."
+  type        = string
+  default     = "ec2-shutdown-lambda-bucket"
+  
+}
+
+variable "backend_lock_table" {
+  description = "The name of the DynamoDB table for Terraform backend state locking."
+  type        = string
+  default     = "Dyning_table"
+  
+}
+
 variable "env" {
   type    = string
   default = "beta"

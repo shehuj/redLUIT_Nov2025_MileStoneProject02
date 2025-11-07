@@ -1,0 +1,57 @@
+name: "Deploy Beta Resume"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy-beta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init & Apply (beta)
+        run: |
+          cd terraform
+          terraform init
+          terraform apply -auto-approve \
+            -var="env=beta" \
+            -var="bucket_name=${{ secrets.BUCKET_NAME }}" \
+            -var="table_deployment_tracking=${{ secrets.TABLE_DEPLOYMENT_TRACKING }}" \
+            -var="table_resume_analytics=${{ secrets.TABLE_RESUME_ANALYTICS }}" \
+            -var="backend_bucket=${{ secrets.BACKEND_BUCKET }}" \
+            -var="backend_lock_table=${{ secrets.BACKEND_LOCK_TABLE }}"
+
+      - name: Generate HTML resume
+        run: |
+          python scripts/generate_resume.py \
+            --input resume.md \
+            --output resume_beta.html \
+            --env beta \
+            --model v1.0
+
+      - name: Upload HTML to S3 (beta)
+        run: |
+          aws s3 cp resume_beta.html s3://${{ secrets.BUCKET_NAME }}/beta/index.html --acl public-read
+
+      - name: Analyze resume (beta)
+        run: |
+          python scripts/analyze_resume.py \
+            --html resume_beta.html \
+            --env beta \
+            --table ${{ secrets.TABLE_RESUME_ANALYTICS }} \
+            --model v1.0
+
+      - name: Write deployment tracking (beta)
+        run: |
+          aws dynamodb put-item \
+            --table-name ${{ secrets.TABLE_DEPLOYMENT_TRACKING }} \
+            --item '{ "commitSha": {"S":"${{ github.sha }}"}, "environment":{"S":"beta"}, "status":{"S":"SUCCESS"}, "s3Url":{"S":"https://${{ secrets.BUCKET_NAME }}.s3.amazonaws.com/beta/index.html"}, "modelUsed":{"S":"v1.0"}, "timestamp":{"S":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'" } }'

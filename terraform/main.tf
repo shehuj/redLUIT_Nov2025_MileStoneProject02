@@ -32,6 +32,7 @@ module "iam" {
   analytics_table  = var.table_resume_analytics
 }
 
+/*
 resource "aws_cloudfront_distribution" "cdn" {
   count = var.enable_cloudfront ? 1 : 0
 
@@ -57,6 +58,9 @@ resource "aws_cloudfront_distribution" "cdn" {
       }
     }
   }
+*/
+
+
 
   viewer_certificate {
     acm_certificate_arn            = var.acm_certificate_arn

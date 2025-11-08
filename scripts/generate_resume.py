@@ -7,7 +7,7 @@ import markdown2  # converts markdown to HTML
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     client = boto3.client("bedrock-runtime")
     # Use a verified default if needed
-    valid_model_id = model_id or "amazon.titan-text-express-v1"
+    valid_model_id = model_id or "amazon.nova-2-multimodal-embeddings-v1:0" #OR ai21.jamba-1-5-large-v1:0 
     # Make the API call
     response = client.invoke_model(
         modelId=valid_model_id,

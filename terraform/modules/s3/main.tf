@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "resume_site" {
   bucket = var.bucket_name
-#  acl    = "public-read"
 
   versioning {
     enabled = true

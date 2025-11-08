@@ -5,32 +5,22 @@ import json
 import markdown2  # converts markdown to HTML
 
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
-    """
-    Use Amazon Bedrock to generate HTML from markdown_text using the specified model.
-    """
     client = boto3.client("bedrock-runtime")
-
-    # Proper Bedrock invoke_model call
+    # Use a verified default if needed
+    valid_model_id = model_id or "amazon.titan-text-express-v1"
+    # Make the API call
     response = client.invoke_model(
-        modelId=model_id,
+        modelId=valid_model_id,
         contentType="application/json",
         accept="application/json",
         body=json.dumps({
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Convert this Markdown resume into a clean, professional HTML resume:\n\n{markdown_text}"
-                }
-            ],
-            "max_tokens": 2048
+            "inputText": markdown_text
         })
     )
-
-    # Decode response body
-    response_body = json.loads(response["body"].read())
-    refined_html = response_body["output"]["content"][0]["text"]
-
-    return refined_html
+    resp_body = json.loads(response["body"].read())
+    # Adjust extraction depending on the model’s output format
+    html = resp_body["results"][0]["outputText"]
+    return html
 
 def convert_markdown_to_html(markdown_path: str, output_html_path: str, ai_model: str):
     with open(markdown_path, 'r', encoding='utf-8') as f:

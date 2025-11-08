@@ -37,12 +37,13 @@ variable "bucket_name" {
   type        = string
   default     = "milestone-bucket"
 }
-
+/*
 variable "backend_bucket" {
   description = "The name of the S3 bucket for backend storage."
   type        = string
   default     = "milestone-bucket"
 }
+*/
 
 variable "backend_lock_table" {
   description = "The name of the DynamoDB table for Terraform backend state locking."

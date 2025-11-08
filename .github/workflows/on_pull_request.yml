@@ -54,7 +54,7 @@ jobs:
             --env beta \
             --region ${{ secrets.AWS_REGION }} \
             --bucket ${{ secrets.S3_BUCKET }} \
-            --model amazon.nova-2-multimodal-embeddings-v1:0
+            --model ai21.jamba-1-5-large-v1:0
 
       - name: Upload HTML to S3 (beta)
         run: |

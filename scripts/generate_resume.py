@@ -5,11 +5,9 @@ import json
 import markdown2  # converts markdown to HTML
 
 def get_available_models(region: str):
-    """List foundation model IDs available in this AWS region via Bedrock."""
     client = boto3.client("bedrock", region_name=region)
-    resp = client.list_foundation_models(regionName=region)
-    model_ids = [m["modelId"] for m in resp["modelSummaries"]]
-    return model_ids
+    resp = client.list_foundation_models()  # just call
+    return [m["modelId"] for m in resp["modelSummaries"]]
 
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     client = boto3.client("bedrock-runtime", region_name="us-east-1")

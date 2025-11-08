@@ -7,7 +7,7 @@ variable "enable_cloudfront" {
 variable "acm_certificate_arn" {
   description = "The ARN of the ACM certificate in us-east-1 for CloudFront HTTPS."
   type        = string
-  default     = "arn:aws:cloudfront::615299732970:distribution/E3FVFND735MQ6Q"
+  default     = "arn:aws:acm:us-east-1:615299732970:certificate/4f3c4d97-4f31-4320-8dd2-79f4ddaaac5a"
 }
 
 variable "aws_region" {
@@ -40,6 +40,7 @@ variable "env" {
   default = "beta"
 }
 
+/*
 # Conditional CloudFront Distribution
 resource "aws_cloudfront_distribution" "cdn" {
   count = var.enable_cloudfront ? 1 : 0
@@ -94,6 +95,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     Environment = var.env
   }
 }
+*/
 
 variable "table_deployment_tracking" {
   description = "value for deployment tracking DynamoDB table"

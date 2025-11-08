@@ -38,5 +38,7 @@ resource "aws_s3_bucket_public_access_block" "block" {
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.resume_site.id
-  policy = "modules/s3/buckePolicy.json"
+  policy = templatefile("${path.module}/bucketPolicy.json", {
+    bucket_name = var.bucket_name
+  }) 
 }

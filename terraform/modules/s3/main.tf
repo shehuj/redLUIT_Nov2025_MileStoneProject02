@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "resume_site" {
   bucket = var.bucket_name
+  # Removed deprecated acl argument. Use bucket policies for access control.
   versioning {
     enabled = true
   }

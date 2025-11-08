@@ -1,6 +1,5 @@
 resource "aws_iam_role" "ci_cd_role" {
   name = "resume-pipeline-role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -86,4 +85,4 @@ resource "aws_cloudwatch_event_target" "resume_pipeline_target" {
   arn          = aws_lambda_function.resume_pipeline.arn
 }
 
-  
+

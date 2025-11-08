@@ -12,8 +12,8 @@ module "s3" {
 
 module "dynamodb" {
   source                    = "./modules/dynamodb"
-  table_deployment_tracking = var.table_deployment_tracking
-  table_resume_analytics    = var.table_resume_analytics
+  table_deployment_tracking = "table_deployment_tracking"
+  table_resume_analytics    = "table_resume_analytics"
 }
 
 module "iam" {
@@ -28,6 +28,4 @@ module "cloudwatch" {
   log_group_name    = var.log_group_name
   log_stream_name   = var.log_stream_name
   retention_in_days = var.retention_in_days
-#  log_stream_arn    = var.log_stream_arn
-#  log_stream_id     = var.log_stream_id
 }

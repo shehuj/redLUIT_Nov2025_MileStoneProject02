@@ -38,5 +38,5 @@ resource "aws_s3_bucket_public_access_block" "block" {
 resource "aws_s3_bucket_policy" "bucket_policy" {
   depends_on = [aws_s3_bucket_public_access_block.block]
   bucket = aws_s3_bucket.resume_site.bucket
-  policy = file("${path.module}/bucket_policy.json")
+  policy = file("${path.module}/bucketPolicy.json")
 }

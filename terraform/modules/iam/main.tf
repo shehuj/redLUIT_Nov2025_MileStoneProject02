@@ -56,7 +56,7 @@ resource "aws_iam_role_policy_attachment" "attach" {
   role       = aws_iam_role.ci_cd_role.name
   policy_arn = aws_iam_policy.ci_cd_policy.arn
 }
-
+/*
 resource "aws_lambda_function" "resume_pipeline" {
   filename         = "lambda_function_payload.zip"
   function_name    = "resume-deployment-pipeline"
@@ -65,6 +65,7 @@ resource "aws_lambda_function" "resume_pipeline" {
   source_code_hash = filebase64sha256("lambda_function_payload.zip")
   runtime          = "nodejs14.x"
 }
+*/
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"

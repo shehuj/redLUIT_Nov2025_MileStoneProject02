@@ -7,7 +7,7 @@ variable "enable_cloudfront" {
 variable "acm_certificate_arn" {
   description = "The ARN of the ACM certificate in us-east-1 for CloudFront HTTPS."
   type        = string
-  default     = "arn:aws:acm:us-east-1:${{ Secrets.aws_account_id }}:certificate/abcdefg-1234-5678-abcd-efghijklmnop"
+  default     = "arn:aws:cloudfront::615299732970:distribution/E3FVFND735MQ6Q"
 }
 
 variable "aws_region" {
@@ -117,7 +117,7 @@ variable "acm_region" {
 variable "hosted_zone_id" {
   description = "The Route 53 Hosted Zone ID for the domain."
   type        = string
-  default     = "Z123456ABCDEFG"
+  default     = "E3FVFND735MQ6Q"
 }
 
 variable "domain_name" {

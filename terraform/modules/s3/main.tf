@@ -1,4 +1,4 @@
-resource "aws_s3_bucket_website_configuration" "resume_site" {
+resource "aws_s3_bucket" "resume_site" {
   bucket = var.bucket_name
   versioning {
     enabled = true

@@ -2,13 +2,7 @@ import os
 import argparse
 import boto3
 import json
-# import markdown2  # optional: to convert markdown to HTML if you prefer pre-processing
-BUCKET = "milestone02project"  # replace with your S3 bucket name
-REGION = "us-east-1"  # replace with your AWS region
-MODEL = "amazon.titan-text-express-v1"  # replace with your desired Bedrock model
-ENV = "beta"  # or "prod"
-OUTPUT_HTML = "resume.html"
-INPUT_MD = "resume_template.md"
+import markdown2  # optional: to convert markdown to HTML if you prefer pre-processing
 
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     """

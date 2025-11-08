@@ -2,7 +2,7 @@ import os
 import argparse
 import boto3
 import json
-import markdown2  # optional: to convert markdown to HTML if you prefer pre-processing
+# import markdown2  # optional: to convert markdown to HTML if you prefer pre-processing
 
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     """

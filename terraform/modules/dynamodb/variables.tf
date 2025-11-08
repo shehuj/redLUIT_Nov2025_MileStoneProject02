@@ -1,4 +1,3 @@
-/*
 variable "table_deployment_tracking" {
   description = "value for deployment tracking table"
   type = string
@@ -10,7 +9,8 @@ variable "table_resume_analytics" {
   type = string
 #  default = "talberesumeanalytics"
 }
-*/
+
+/*
 variable "table_deployment_tracking" {
   type = string
   validation {
@@ -26,3 +26,4 @@ variable "table_resume_analytics" {
     error_message = "table_resume_analytics must be at least 3 characters."
   }
 }
+*/

@@ -1,7 +1,5 @@
 resource "aws_s3_bucket" "resume_site" {
   bucket = var.bucket_name
-#  acl    = "public-read"
-
   versioning {
     enabled = true
   }
@@ -21,18 +19,24 @@ resource "aws_s3_bucket" "resume_site" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "resume_site_ownership" {
+  bucket = aws_s3_bucket.resume_site.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+    # Other options: "BucketOwnerPreferred", "ObjectWriter" depending on your needs
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "block" {
   bucket                  = aws_s3_bucket.resume_site.id
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
+  block_public_acls       = false
+  ignore_public_acls      = false
+  block_public_policy     = false
+  restrict_public_buckets = false
 }
-
-output "bucket_name" {
-  value = aws_s3_bucket.resume_site.id
-}
-
-output "bucket_arn" {
-  value = aws_s3_bucket.resume_site.arn
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  depends_on = [aws_s3_bucket_public_access_block.block]
+  bucket = aws_s3_bucket.resume_site.bucket
+  policy = file("${path.module}/bucketPolicy.json")
 }

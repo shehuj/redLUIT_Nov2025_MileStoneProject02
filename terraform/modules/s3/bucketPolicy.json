@@ -1,0 +1,69 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowListBucketBeta",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:ListBucket",
+        "Resource": "arn:aws:s3:::milestone02bucket",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": [
+              "beta/*"
+            ]
+          }
+        }
+      },
+      {
+        "Sid": "AllowGetBucketLocationBeta",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetBucketLocation",
+        "Resource": "arn:aws:s3:::milestone02bucket"
+      },
+      {
+        "Sid": "AllowReadWriteDeleteBetaObjects",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        "Resource": "arn:aws:s3:::milestone02bucket/beta/*"
+      },
+      {
+        "Sid": "AllowListBucketProd",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:ListBucket",
+        "Resource": "arn:aws:s3:::milestone02bucket",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": [
+              "prod/*"
+            ]
+          }
+        }
+      },
+      {
+        "Sid": "AllowGetBucketLocationProd",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetBucketLocation",
+        "Resource": "arn:aws:s3:::milestone02bucket"
+      },
+      {
+        "Sid": "AllowReadWriteDeleteProdObjects",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        "Resource": "arn:aws:s3:::milestone02bucket/prod/*"
+      }
+    ]
+  }

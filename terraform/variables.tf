@@ -35,6 +35,7 @@ variable "aws_region" {
 variable "bucket_name" {
   description = "The name of the S3 bucket for the website."
   type        = string
+  default     = "milestone02bucket"
 }
 /*
 variable "backend_bucket" {

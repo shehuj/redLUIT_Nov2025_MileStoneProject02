@@ -28,6 +28,6 @@ module "cloudwatch" {
   log_group_name    = var.log_group_name
   log_stream_name   = var.log_stream_name
   retention_in_days = var.retention_in_days
-  enable_cloudfront = var.enable_cloudfront
+#  enable_cloudfront = var.enable_cloudfront
 
 }

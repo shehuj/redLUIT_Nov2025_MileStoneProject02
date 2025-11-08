@@ -26,12 +26,12 @@ set -euo pipefail
 # -----------------------------------------------------------------------------
 
 # Variables and defaults
-DOMAIN="www.jenom.com"
+DOMAIN="www.claudiq.com"
 ALT_NAMES=""
 REGION="us-east-1"
 HOSTED_ZONE_ID=""
-LOG_PREFIX="[ACM‑Route53]"
-CertificateArn="arn:aws:acm:us-east-1:123456789012:certificate/abcdefg-1234-5678-abcd-efghijklmnop"
+LOG_PREFIX="[ACM-Route53]"
+CertificateArn=""
 
 usage() {
   echo "$LOG_PREFIX Usage:"

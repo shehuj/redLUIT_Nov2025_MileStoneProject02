@@ -7,7 +7,7 @@ variable "enable_cloudfront" {
 variable "acm_certificate_arn" {
   description = "The ARN of the ACM certificate in us-east-1 for CloudFront HTTPS."
   type        = string
-  default     = "arn:aws:acm:us-east-1:615299732970:certificate/4f3c4d97-4f31-4320-8dd2-79f4ddaaac5a"
+  default     = "arn:aws:acm:us-east-1:615299732970:certificate/88139633-368f-49e1-a140-cc5dd0f0a6e8"
 }
 
 variable "aws_region" {
@@ -18,7 +18,7 @@ variable "aws_region" {
 variable "bucket_name" {
   description = "The name of the S3 bucket for the website."
   type        = string
-  default     = "milestone-project-02-website-bucket"
+  default     = "milestone-project-02-bucket"
 }
 
 variable "backend_bucket" {
@@ -100,7 +100,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 variable "table_deployment_tracking" {
   description = "value for deployment tracking DynamoDB table"
   type = string
-  default = "deployment-tracking"
+  default = "deploymenttracking"
 }
 
 variable "table_resume_analytics" {
@@ -119,18 +119,18 @@ variable "acm_region" {
 variable "hosted_zone_id" {
   description = "The Route 53 Hosted Zone ID for the domain."
   type        = string
-  default     = "E3FVFND735MQ6Q"
+  default     = "Z04492601HFUDC7HTYJ6B"
 }
 
 variable "domain_name" {
   description = "The domain name for the website."
   type        = string
-  default     = "www.jenom.com"
+  default     = "www.claudiq.com"
 }
 
 variable "alt_names" {
   description = "Alternative domain names for the CloudFront distribution."
   type        = list(string)
-  default     = ["jenom.com", "www.jenom.com"]
+  default     = ["claudiq.com", "www.claudiq.com"]
   
 }

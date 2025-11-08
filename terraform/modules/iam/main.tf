@@ -23,6 +23,8 @@ resource "aws_iam_policy" "ci_cd_policy" {
         Action   = [
           "s3:PutObject",
           "s3:GetObject",
+          "s3:ListBucket",
+          "s3:DeleteObject"
           "s3:DeleteObject"
         ],
         Resource = "${var.bucket_arn}/*"
@@ -31,6 +33,7 @@ resource "aws_iam_policy" "ci_cd_policy" {
         Effect   = "Allow",
         Action   = [
           "dynamodb:PutItem",
+          "dynamodb:GetItem",
           "dynamodb:UpdateItem"
         ],
         Resource = [

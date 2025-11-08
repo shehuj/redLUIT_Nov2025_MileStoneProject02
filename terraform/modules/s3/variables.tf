@@ -1,6 +1,6 @@
 variable "bucket_name" {
   type = string
-  default = "milestone-project-02-website-bucket"
+  default = "milestone-02-bucket"
 }
 
 variable "env" {

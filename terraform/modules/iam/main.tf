@@ -65,7 +65,7 @@ resource "aws_lambda_function" "resume_pipeline" {
   source_code_hash = filebase64sha256("lambda_function_payload.zip")
   runtime          = "nodejs14.x"
 }
-*/
+
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
@@ -85,5 +85,5 @@ resource "aws_cloudwatch_event_target" "resume_pipeline_target" {
   target_id  = "resume-pipeline-target"
   arn          = aws_lambda_function.resume_pipeline.arn
 }
-
+*/
 

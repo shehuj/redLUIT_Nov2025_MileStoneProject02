@@ -13,26 +13,26 @@ def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
     prompt = (
-        "You are a resume‑formatting assistant. Convert the following HTML snippet into a "
-        "clean, professional, responsive HTML resume page:\n\n"
+        "You are a resume‑formatting assistant. Convert the following HTML snippet into a clean, professional HTML resume:\n\n"
         f"{markdown_text}"
     )
 
-    # Decide schema based on model id
-    if model_id.startswith("anthropic.claude") or model_id.startswith("amazon.nova") or model_id.startswith("ai21.jamba"):
+    # Build request body depending on model type
+    if model_id.startswith("anthropic.claude"):
         request_body = {
             "messages": [
                 {"role": "user", "content": prompt}
             ],
-            "max_tokens_to_sample": 1024
+            "temperature": 0.5  # example supported key for Claude
         }
     else:
+        # Assume a Titan/Nova text model
         request_body = {
             "inputText": prompt,
             "textGenerationConfig": {
-                "maxTokenCount": 1536,
                 "temperature": 0.5,
-                "topP": 0.9
+                "topP": 0.9,
+                "maxTokenCount": 1536
             }
         }
 
@@ -44,15 +44,14 @@ def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     )
 
     resp_body = json.loads(response["body"].read())
-    if "results" in resp_body and isinstance(resp_body["results"], list):
-        html = resp_body["results"][0].get("outputText", "")
+
+    # Extract output
+    if "results" in resp_body:
+        return resp_body["results"][0].get("outputText", "")
     elif "messages" in resp_body:
-        html = resp_body["messages"][-1]["content"]
+        return resp_body["messages"][-1]["content"]
     else:
-        html = resp_body.get("outputText", "")
-
-    return html
-
+        return resp_body.get("outputText", "")
 def convert_markdown_to_html(markdown_path: str, output_html_path: str, ai_model: str):
     with open(markdown_path, 'r', encoding='utf‑8') as f:
         markdown = f.read()

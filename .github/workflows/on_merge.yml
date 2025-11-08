@@ -28,7 +28,7 @@ jobs:
         run: |
           working_dir=./terraform
           cd $working_dir
-          terraform init
+          terraform init -reconfigure
           terraform apply -auto-approve \
             -var="env=prod" \
           
@@ -40,10 +40,10 @@ jobs:
 
       - name: Copy Beta → Prod
         run: |
-          aws s3 cp s3://${{ secrets.BUCKET_NAME }}/beta/index.html s3://${{ secrets.BUCKET_NAME }}/prod/index.html --acl public-read
+          aws s3 cp s3://${{ secrets.S3_BUCKET }}/beta/index.html s3://${{ secrets.S3_BUCKET }}/prod/index.html
 
       - name: Write deployment tracking (prod)
         run: |
           aws dynamodb put-item \
             --table-name ${{ secrets.TABLE_DEPLOYMENT_TRACKING }} \
-            --item '{ "commitSha": {"S":"${{ github.sha }}"}, "environment":{"S":"prod"}, "status":{"S":"SUCCESS"}, "s3Url":{"S":"https://${{ secrets.BUCKET_NAME }}.s3.amazonaws.com/prod/index.html"}, "modelUsed":{"S":"v1.0"}, "timestamp":{"S":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'" } }'
+            --item '{ "commitSha": {"S":"${{ github.sha }}"}, "environment":{"S":"prod"}, "status":{"S":"SUCCESS"}, "s3Url":{"S":"https://${{ secrets.S3_BUCKET }}.s3.amazonaws.com/prod/index.html"}, "modelUsed":{"S":"v1.0"}, "timestamp":{"S":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'" } }'

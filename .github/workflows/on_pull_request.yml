@@ -54,7 +54,7 @@ jobs:
 
       - name: Upload HTML to S3 (beta)
         run: |
-          aws s3 cp resume_beta.html s3://${{ secrets.BUCKET_NAME }}/beta/index.html --acl public-read
+          aws s3 cp resume_beta.html s3://${{ secrets.S3_BUCKET }}/beta/index.html --acl public-read
 
       - name: Analyze resume (beta)
         run: |

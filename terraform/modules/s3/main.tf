@@ -35,10 +35,9 @@ resource "aws_s3_bucket_public_access_block" "block" {
   block_public_policy     = false
   restrict_public_buckets = false
 }
-
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.resume_site.id
-  policy = templatefile("${path.module}/bucketPolicy.json", {
-    bucket_name = var.bucket_name
-  }) 
+  depends_on = [aws_s3_bucket_public_access_block.bucket_block_public_access]
+
+  bucket = aws_s3_bucket.my_bucket.bucket
+  policy = file("${path.module}/bucket_policy.json")
 }

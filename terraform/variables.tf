@@ -40,8 +40,6 @@ variable "bucket_name" {
 variable "backend_bucket" {
   description = "The name of the S3 bucket for backend storage."
   type        = string
-  default     = "ec2-shutdown-lambda-bucket"
-  
 }
 
 variable "backend_lock_table" {

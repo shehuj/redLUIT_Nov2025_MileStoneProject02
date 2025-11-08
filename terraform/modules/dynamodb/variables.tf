@@ -1,3 +1,4 @@
+/*
 variable "table_deployment_tracking" {
   description = "value for deployment tracking table"
   type = string
@@ -9,7 +10,7 @@ variable "table_resume_analytics" {
   type = string
 #  default = "talberesumeanalytics"
 }
-
+*/
 variable "table_deployment_tracking" {
   type = string
   validation {

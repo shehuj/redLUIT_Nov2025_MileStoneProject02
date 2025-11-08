@@ -5,36 +5,39 @@ import json
 import markdown2  # converts markdown to HTML
 
 def get_available_models(region: str):
+    """List foundation model IDs available in this AWS region via Bedrock."""
     client = boto3.client("bedrock", region_name=region)
-    resp = client.list_foundation_models()  # just call
-    return [m["modelId"] for m in resp["modelSummaries"]]
+    resp = client.list_foundation_models()  
+    model_ids = [m["modelId"] for m in resp.get("modelSummaries", [])]
+    return model_ids
 
-def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
-    client = boto3.client("bedrock-runtime", region_name="us-east-1")
+def call_bedrock_for_html(markdown_html: str, model_id: str, region: str) -> str:
+    """
+    Use Amazon Bedrock to generate refined HTML from markdown_html, using Jamba‑1.5 Large schema.
+    """
+    client = boto3.client("bedrock-runtime", region_name=region)
 
-    prompt = (
-        "You are a resume‑formatting assistant. Convert the following HTML snippet into a clean, professional HTML resume:\n\n"
-        f"{markdown_text}"
-    )
-
-    # Build request body depending on model type
-    if model_id.startswith("anthropic.claude"):
-        request_body = {
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "temperature": 0.5  # example supported key for Claude
-        }
-    else:
-        # Assume a Titan/Nova text model
-        request_body = {
-            "inputText": prompt,
-            "textGenerationConfig": {
-                "temperature": 0.5,
-                "topP": 0.9,
-                "maxTokenCount": 1536
+    # System + user messages: guiding the model to convert resume HTML
+    request_body = {
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "You are a professional resume formatter. "
+                    "Convert the input HTML snippet into a clean, standards‑compliant, responsive web resume page. "
+                    "Ensure semantic HTML, proper headings, and professional layout."
+                )
+            },
+            {
+                "role": "user",
+                "content": markdown_html
             }
-        }
+        ],
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "max_tokens": 2048,
+        "stop": ["</body></html>"]
+    }
 
     response = client.invoke_model(
         modelId=model_id,
@@ -44,20 +47,21 @@ def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
     )
 
     resp_body = json.loads(response["body"].read())
-
-    # Extract output
-    if "results" in resp_body:
-        return resp_body["results"][0].get("outputText", "")
-    elif "messages" in resp_body:
-        return resp_body["messages"][-1]["content"]
+    # According to the Jamba docs: the output will be in resp_body["messages"] or similar
+    if "messages" in resp_body and isinstance(resp_body["messages"], list):
+        html = resp_body["messages"][-1]["content"]
     else:
-        return resp_body.get("outputText", "")
-def convert_markdown_to_html(markdown_path: str, output_html_path: str, ai_model: str):
-    with open(markdown_path, 'r', encoding='utf‑8') as f:
-        markdown = f.read()
+        # fallback if schema slightly differs
+        html = resp_body.get("outputText", "")
+    return html
 
-    base_html = markdown2.markdown(markdown)
-    refined_html = call_bedrock_for_html(base_html, ai_model)
+def convert_markdown_to_html(markdown_path: str, output_html_path: str, ai_model: str, region: str):
+    with open(markdown_path, 'r', encoding='utf‑8') as f:
+        markdown_content = f.read()
+
+    base_html = markdown2.markdown(markdown_content)
+
+    refined_html = call_bedrock_for_html(base_html, ai_model, region)
 
     with open(output_html_path, 'w', encoding='utf‑8') as f:
         f.write(refined_html)
@@ -71,12 +75,12 @@ def upload_to_s3(local_path: str, bucket: str, key: str, region: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', required=True, help='Path to resume_template.md')
+    parser.add_argument('--input', required=True, help='Path to resume_template.md or resume.md')
     parser.add_argument('--output', required=True, help='Path to output HTML file')
     parser.add_argument('--env', required=True, choices=['beta', 'prod'], help='Environment (beta or prod)')
-    parser.add_argument('--model', required=True, help='Bedrock model ID')
+    parser.add_argument('--model', required=True, help='Bedrock model ID (e.g., ai21.jamba‑1‑5-large‑v1:0)')
     parser.add_argument('--bucket', required=True, help='S3 bucket name')
-    parser.add_argument('--region', required=True, help='AWS region for operations')
+    parser.add_argument('--region', required=True, help='AWS region for operations (e.g., us‑east‑1)')
     args = parser.parse_args()
 
     print("🔍 Checking available Bedrock models in region:", args.region)
@@ -86,7 +90,8 @@ def main():
         print("Available model IDs include:", ", ".join(available[:5]), "…")
         exit(1)
 
-    convert_markdown_to_html(args.input, args.output, args.model)
+    convert_markdown_to_html(args.input, args.output, args.model, args.region)
+
     s3_key = f"{args.env}/index.html"
     upload_to_s3(args.output, args.bucket, s3_key, args.region)
 

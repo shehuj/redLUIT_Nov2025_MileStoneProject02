@@ -24,6 +24,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Clean up previous Terraform files
+        run: |
+          rm -rf ./terraform/.terraform
+          rm -rf ./terraform/.terraform.lock.hcl
+
       - name: Terraform Init & Apply (beta)
         run: |
           working_dir=./terraform

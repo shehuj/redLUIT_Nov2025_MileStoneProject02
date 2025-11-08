@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    backend_bucket = var.backend_bucket
+    bucket         = var.backend_bucket
 #    bucket         = "ec2-shutdown-lambda-bucket"      # literal string, not var.backend_bucket
     key            = "milestone-project-02/terraform.tfstate"    # literal string
     region         = "us-east-1"                     # literal string

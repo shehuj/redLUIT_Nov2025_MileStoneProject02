@@ -1,3 +1,20 @@
+variable "log_group_name" {
+  description = "Name of the CloudWatch log group."
+  type        = string
+  default     = "resume-log-group"
+}
+
+variable "log_stream_name" {
+  description = "Name of the CloudWatch log stream."
+  type        = string
+  default     = "resume-log-stream"
+}
+
+variable "retention_in_days" {
+  description = "Retention period for the CloudWatch logs in days."
+  type        = number
+  default     = 14
+}
 variable "enable_cloudfront" {
   description = "Set to true to deploy CloudFront distribution with HTTPS."
   type        = bool

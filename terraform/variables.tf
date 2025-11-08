@@ -100,13 +100,13 @@ resource "aws_cloudfront_distribution" "cdn" {
 variable "table_deployment_tracking" {
   description = "value for deployment tracking DynamoDB table"
   type = string
-  default = "ec2-shutdown-deployment-tracking"
+  default = "deployment-tracking"
 }
 
 variable "table_resume_analytics" {
   description = "value for resume analytics DynamoDB table"
   type = string
-  default = "ec2-shutdown-resume-analytics"
+  default = "resumeanalytics"
 }
 
 variable "acm_region" {

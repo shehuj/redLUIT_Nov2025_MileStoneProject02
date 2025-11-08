@@ -7,7 +7,7 @@ variable "enable_cloudfront" {
 variable "acm_certificate_arn" {
   description = "The ARN of the ACM certificate in us-east-1 for CloudFront HTTPS."
   type        = string
-  default     = "arn:aws:acm:us-east-1:123456789012:certificate/abcdefg-1234-5678-abcd-efghijklmnop"
+  default     = "arn:aws:acm:us-east-1:${{ Secrets.aws_account_id }}:certificate/abcdefg-1234-5678-abcd-efghijklmnop"
 }
 
 variable "aws_region" {
@@ -31,7 +31,7 @@ variable "backend_bucket" {
 variable "backend_lock_table" {
   description = "The name of the DynamoDB table for Terraform backend state locking."
   type        = string
-  default     = "Dyning_table"
+  default     = "dyning_table"
   
 }
 

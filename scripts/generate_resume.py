@@ -4,35 +4,65 @@ import boto3
 import json
 import markdown2  # converts markdown to HTML
 
+def get_available_models(region: str):
+    """List foundation model IDs available in this AWS region via Bedrock."""
+    client = boto3.client("bedrock", region_name=region)
+    resp = client.list_foundation_models(regionName=region)
+    model_ids = [m["modelId"] for m in resp["modelSummaries"]]
+    return model_ids
+
 def call_bedrock_for_html(markdown_text: str, model_id: str) -> str:
-    client = boto3.client("bedrock-runtime")
-    # Use a verified default if needed
-    valid_model_id = model_id or "amazon.nova-2-multimodal-embeddings-v1:0" 
-    # Make the API call
+    client = boto3.client("bedrock-runtime", region_name="us-east-1")
+
+    prompt = (
+        "You are a resume‑formatting assistant. Convert the following HTML snippet into a "
+        "clean, professional, responsive HTML resume page:\n\n"
+        f"{markdown_text}"
+    )
+
+    # Decide schema based on model id
+    if model_id.startswith("anthropic.claude") or model_id.startswith("amazon.nova") or model_id.startswith("ai21.jamba"):
+        request_body = {
+            "messages": [
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens_to_sample": 1024
+        }
+    else:
+        request_body = {
+            "inputText": prompt,
+            "textGenerationConfig": {
+                "maxTokenCount": 1536,
+                "temperature": 0.5,
+                "topP": 0.9
+            }
+        }
+
     response = client.invoke_model(
-        modelId=valid_model_id,
+        modelId=model_id,
         contentType="application/json",
         accept="application/json",
-        body=json.dumps({
-            "inputText": markdown_text
-        })
+        body=json.dumps(request_body)
     )
+
     resp_body = json.loads(response["body"].read())
-    # Adjust extraction depending on the model’s output format
-    html = resp_body["results"][0]["outputText"]
+    if "results" in resp_body and isinstance(resp_body["results"], list):
+        html = resp_body["results"][0].get("outputText", "")
+    elif "messages" in resp_body:
+        html = resp_body["messages"][-1]["content"]
+    else:
+        html = resp_body.get("outputText", "")
+
     return html
 
 def convert_markdown_to_html(markdown_path: str, output_html_path: str, ai_model: str):
-    with open(markdown_path, 'r', encoding='utf-8') as f:
+    with open(markdown_path, 'r', encoding='utf‑8') as f:
         markdown = f.read()
 
-    # Basic conversion before refinement
     base_html = markdown2.markdown(markdown)
-
-    # Bedrock refinement
     refined_html = call_bedrock_for_html(base_html, ai_model)
 
-    with open(output_html_path, 'w', encoding='utf-8') as f:
+    with open(output_html_path, 'w', encoding='utf‑8') as f:
         f.write(refined_html)
 
     print(f"✅ Converted {markdown_path} → {output_html_path} using model {ai_model}")
@@ -47,13 +77,19 @@ def main():
     parser.add_argument('--input', required=True, help='Path to resume_template.md')
     parser.add_argument('--output', required=True, help='Path to output HTML file')
     parser.add_argument('--env', required=True, choices=['beta', 'prod'], help='Environment (beta or prod)')
-    parser.add_argument('--model', required=True, help='Bedrock model ID (e.g., anthropic.claude-3-sonnet-20240229-v1:0)')
+    parser.add_argument('--model', required=True, help='Bedrock model ID')
     parser.add_argument('--bucket', required=True, help='S3 bucket name')
-    parser.add_argument('--region', required=True, help='AWS region for S3')
+    parser.add_argument('--region', required=True, help='AWS region for operations')
     args = parser.parse_args()
 
-    convert_markdown_to_html(args.input, args.output, args.model)
+    print("🔍 Checking available Bedrock models in region:", args.region)
+    available = get_available_models(args.region)
+    if args.model not in available:
+        print(f"❌ Model '{args.model}' not found in available models for region {args.region}.")
+        print("Available model IDs include:", ", ".join(available[:5]), "…")
+        exit(1)
 
+    convert_markdown_to_html(args.input, args.output, args.model)
     s3_key = f"{args.env}/index.html"
     upload_to_s3(args.output, args.bucket, s3_key, args.region)
 

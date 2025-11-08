@@ -19,8 +19,8 @@ resource "aws_s3_bucket" "resume_site" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "my_bucket_ownership" {
-  bucket = aws_s3_bucket.my_bucket.id
+resource "aws_s3_bucket_ownership_controls" "resume_site_ownership" {
+  bucket = aws_s3_bucket.resume_site.id
 
   rule {
     object_ownership = "BucketOwnerEnforced"
@@ -37,6 +37,6 @@ resource "aws_s3_bucket_public_access_block" "block" {
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.my_bucket.id
+  bucket = aws_s3_bucket.resume_site.id
   policy = file("${path.module}/buckePolicy.json")
 }

@@ -50,7 +50,6 @@ jobs:
             --input resume.md \
             --output resume_beta.html \
             --env beta \
-            --table ${{ secrets.TABLE_RESUME_ANALYTICS }} \
             --region ${{ secrets.AWS_REGION }} \
             --bucket ${{ secrets.S3_BUCKET }} \
             --model v1.0

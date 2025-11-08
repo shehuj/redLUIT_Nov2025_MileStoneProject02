@@ -31,11 +31,12 @@ jobs:
           terraform init
           terraform apply -auto-approve \
             -var="env=prod" \
-            -var="bucket_name=${{ secrets.BUCKET_NAME }}" \
-            -var="table_deployment_tracking=${{ secrets.TABLE_DEPLOYMENT_TRACKING }}" \
-            -var="table_resume_analytics=${{ secrets.TABLE_RESUME_ANALYTICS }}" \
-            -var="backend_bucket=${{ secrets.BACKEND_BUCKET }}" \
-            -var="backend_lock_table=${{ secrets.BACKEND_LOCK_TABLE }}"
+          
+        #    -var="bucket_name=${{ secrets.S3_BUCKET }}" \
+        #    -var="table_deployment_tracking=${{ secrets.TABLE_DEPLOYMENT_TRACKING }}" \
+        #    -var="table_resume_analytics=${{ secrets.TABLE_RESUME_ANALYTICS }}" \
+        #    -var="backend_bucket=${{ secrets.BACKEND_BUCKET }}" \
+        #    -var="backend_lock_table=${{ secrets.BACKEND_LOCK_TABLE }}"
 
       - name: Copy Beta → Prod
         run: |

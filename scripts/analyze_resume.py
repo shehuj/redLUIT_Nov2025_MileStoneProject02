@@ -53,9 +53,9 @@ You are an AI ATS analysis engine. Analyze the following HTML resume content and
 - timestamp (UTC ISO8601)
 - aiModel
 - wordCount
-- atsScore (0–100)
+- atsScore (0-100)
 - keywords (list)
-- readability (0–100)
+- readability (0-100)
 - missingSections (list of section names)
 
 HTML content:
@@ -127,3 +127,4 @@ def lambda_handler(event, context):
         "statusCode": 200,
         "body": json.dumps({"analysisId": result["analysisId"]})
     }
+print("✅ analyze_resume.py loaded")

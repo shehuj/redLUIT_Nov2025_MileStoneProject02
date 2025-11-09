@@ -28,7 +28,7 @@ jobs:
         run: |
           working_dir=./terraform
           cd $working_dir
-          terraform init -reconfigure
+          terraform init
           terraform apply -auto-approve \
             -var="env=prod" \
           

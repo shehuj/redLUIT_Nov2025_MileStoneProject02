@@ -210,4 +210,4 @@ Adept at collaborating with cross-functional teams to streamline software delive
 ## PROFESSIONAL CERTIFICATIONS  
 - AWS Certified Cloud Practitioner  
 - AWS Certified Solutions Architect – Associate  
-- Google Cloud Certified – Professional Cloud Engineer
+- Google Cloud Certified – Professional Cloud Engineer  

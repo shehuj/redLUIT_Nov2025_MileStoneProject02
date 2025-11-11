@@ -82,17 +82,17 @@ def main():
 
     # Read from env variables as fallback
     model_id = args.model or os.environ.get('RESUME_MODEL_ID')
-    bucket_name = args.bucket or os.environ.get('RESUME_BUCKET_NAME')
-    region = args.region or os.environ.get('RESUME_AWS_REGION')
+    bucket_name = args.bucket or os.environ.get('S3_BUCKET')
+    region = args.region or os.environ.get('AWS_REGION')
 
     # Validate required values
     missing = []
     if not model_id:
         missing.append('--model or env RESUME_MODEL_ID')
     if not bucket_name:
-        missing.append('--bucket or env RESUME_BUCKET_NAME')
+        missing.append('--bucket or env S3_BUCKET')
     if not region:
-        missing.append('--region or env RESUME_AWS_REGION')
+        missing.append('--region or env AWS_REGION')
     if missing:
         parser.error(f"Missing required configuration: {', '.join(missing)}")
 
@@ -110,4 +110,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-print("✅ analyze_resume.py loaded")

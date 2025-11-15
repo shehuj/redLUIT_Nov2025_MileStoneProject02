@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 import boto3
-from datetime import datetime
+from datetime import datetime, timezone
 from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource('dynamodb')
@@ -79,7 +79,7 @@ HTML content:
     # fallback structure
     result = {
         "analysisId": str(uuid.uuid4()),
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "aiModel": model_id,
         "wordCount": len(html_content.split()),
         "atsScore": None,
